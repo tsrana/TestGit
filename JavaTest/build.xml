@@ -1,0 +1,60 @@
+<?xml version = "1.0"?>
+<project name = "fax" basedir = "." default = "build">
+   <property name = "src.dir" value = "src"/>
+   <property name = "web.dir" value = "war"/>
+   <property name = "build.dir" value = "${web.dir}/WEB-INF/classes"/>
+   <property name = "name" value = "fax"/>
+
+   <path id = "master-classpath">
+      <fileset dir = "${web.dir}/WEB-INF/lib">
+         <include name = "*.jar"/>
+      </fileset>
+      
+      <pathelement path = "${build.dir}"/>
+   </path>
+
+   <target name = "build" description = "Compile source tree java files" depends="clean">
+      <mkdir dir = "${build.dir}"/>
+	  <mkdir dir = "${web.dir}/WEB-INF/lib"/>
+      
+      <javac destdir = "${build.dir}" source = "1.8" target = "1.8">
+         <src path = "${src.dir}"/>
+         <classpath refid = "master-classpath"/>
+      </javac>
+   </target>
+ 
+   <target name = "clean" description = "Clean output directories">
+      <delete>
+         <fileset dir = "${build.dir}">
+            <include name = "**/*.class"/>
+         </fileset>
+      </delete>
+   </target>
+	
+	<target name = "build-jar" depends="build">
+	   <jar destfile = "${web.dir}/lib/util.jar"
+	      basedir = "${build.dir}"
+	     excludes = "**/Test.class">
+	      
+	      <manifest>
+	         <attribute name = "Main-Class" value = "com.ant.MainJavaClass"/>
+	      </manifest>
+	   </jar>
+	</target>
+	
+	<target name = "generate-javadoc">
+	   <javadoc packagenames = "com.*" sourcepath = "${src.dir}" 
+	      destdir = "doc" version = "true" windowtitle = "Fax Application">
+	      
+	      <doctitle><![CDATA[= Fax Application =]]></doctitle>
+	      
+	      <bottom>
+	         <![CDATA[Copyright © 2011. All Rights Reserved.]]>
+	      </bottom>
+	      
+	      <group title = "my packages" packages = "com.ant.*"/>
+	    </javadoc>
+
+	   <echo message = "java doc has been generated!" />
+	</target>
+</project>
